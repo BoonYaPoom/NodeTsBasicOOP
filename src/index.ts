@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import cors, { CorsOptions } from 'cors';
 import errorHandler from "./Middleware/errorHandlder";
 import routes from "./routes/routes";
+import { setupSwagger } from "./swager";
 
 dotenv.config()
 const app = express()
@@ -20,6 +21,7 @@ app.use(cors(corsOptions));
 app.use(express.json()); // Middleware สำหรับการแปลง JSON
 app.use('/api', routes);
 app.use(errorHandler);
+setupSwagger(app);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
