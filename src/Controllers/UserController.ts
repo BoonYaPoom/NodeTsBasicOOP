@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import UserService from "../services/UserService";
 import { ResStatusBasic } from "../Middleware/Status/ResStatusBasic";
+import UserService from "../Models/UserModel";
 
 export const AllUsers = async (req: Request, res: Response) => {
     try {
