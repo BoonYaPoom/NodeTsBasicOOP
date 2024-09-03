@@ -1,34 +1,28 @@
-import { UserResponse } from "../Types/Response/UserResponse";
+import { AppDataSource } from "../db/database";
+import { User } from "../entity/User";
 
-class User {
 
-    // สร้างข้อมูลแบบเป็น  array UserResponse[] กำหนดtypeชุดข้อมูล และ [] กำหนดให้เป็น array ด้านใน เป็น ชุด object
-    private static users: UserResponse[] = [
-        { id: 1, username: 'Alice', password: 'password123', status: 1 },
-        { id: 2, username: 'Bob', password: 'password456', status: 0 },
-    ]
-
-    // ฟังก์ชันดึงข้อมูลทั้งหมด
-    public static getAlluser(): UserResponse[] {
-        return this.users
+class UserService {
+    private static _userRepository = AppDataSource.getRepository(User);
+    public static get userRepository() {
+        return UserService._userRepository;
+    }
+    public static set userRepository(value) {
+        UserService._userRepository = value;
     }
 
-    // ฟังก์ชันดึงข้อมูลตาม ID
-    public static getUserById(id: number): UserResponse | undefined {
-        return this.users.find(user => user.id === id);
+    public static async getAllUsers(): Promise<User[]> {
+        return await this.userRepository.find();
     }
 
-    // ฟังก์ชันเพิ่มผู้ใช้ใหม่
-    public static createUser(username: string, password: string, status: number): UserResponse {
-        const newUser: UserResponse = {
-            id: this.users.length + 1, // กำหนด ID ใหม่
-            username,
-            password,
-            status
-        };
-        this.users.push(newUser);
-        return newUser;
+    public static async getUserById(id: number): Promise<User | null> {
+        return await this.userRepository.findOneBy({ id });
     }
 
+    public static async createUser(username: string, password: string, status: number): Promise<User> {
+        const newUser = this.userRepository.create({ username, password, status });
+        return await this.userRepository.save(newUser);
+    }
 }
-export default User;
+
+export default UserService;
